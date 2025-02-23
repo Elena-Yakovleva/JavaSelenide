@@ -1,9 +1,12 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/b6xxowckxi7kr58t?svg=true)](https://ci.appveyor.com/project/Elena-Yakovleva/javaselenide)
+
 ### Домашнее задание к занятию «2.2. Selenide»
 
 #### Настройка
 1. Целевой сервис
    Файл целевого сервиса расположен в файле app-card-delivery.jar 
 2. build.gradle
+
    Файл build.gradle в проектах на базе Selenide должен выглядеть следующим образом:
 ````
 plugins {
@@ -39,6 +42,7 @@ test {
 
 ````
 3. .appveyor.yml
+
    Команда запуска SUT в секции install будет выглядеть следующим образом
 ````
 - java -jar ./artifacts/app-card-delivery.jar &
