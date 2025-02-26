@@ -26,15 +26,6 @@ public class DeliveryCardServiceTestV2 {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern(pattern));
     }
 
-    public String currentMonth(String pattern) {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern(pattern));
-    }
-
-    public String generateMonth(int days ) {
-        Month month = LocalDate.now().plusDays(days).getMonth();
-        return month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru"));
-    }
-
 
     @Test
     void shouldSelectCityFromList() {
@@ -53,26 +44,35 @@ public class DeliveryCardServiceTestV2 {
         $("[data-test-id='notification']").shouldBe(Condition.visible, Duration.ofSeconds(15));// подтвердить оформление
         $("[data-test-id='notification']").shouldBe(Condition.text("Встреча успешно забронирована на " + planningDate));
 
-
     }
 
     @Test
     void shouldSelectDataFromCalendar() {
-        String planningDate = generateDate(7, "dd.MM.yyyy");
-        String planningDayNumber = generateDate(7,"d");
-        String planningMount = generateMonth(7);
 
+        int daysToMeeting = 16; // через сколько дней планируется встреча
+        int minDaysToMeeting = 3; // минимальная дата, на которую возможна встреча
+
+        String planningDate = generateDate(daysToMeeting, "dd.MM.yyyy");
+        String planningDayNumber = generateDate(daysToMeeting, "d");
+        int planningMonth = Integer.parseInt(generateDate(daysToMeeting, "MM"));
+        int planningYear = Integer.parseInt(generateDate(daysToMeeting, "yyyy"));
+        int minMonth = Integer.parseInt(generateDate(minDaysToMeeting, "MM"));
+        int minYear = Integer.parseInt(generateDate(minDaysToMeeting, "yyyy"));
 
 
         Selenide.open("http://localhost:9999"); // открыть страницу
         $("[data-test-id='city'] input").sendKeys("Иваново"); // ввести город (один из административных центров субъектов РФ.)
-
         $(".icon-button").shouldHave(Condition.visible).click();
-
-        if() {
+        // сравнение ожидаемого и текущего года
+        if (minYear < planningYear) {
+            $("[data-step='12']").click();
+        }
+        // сравнение ожидаемого и текущего месяца
+        if (minMonth < planningMonth) {
             $("[data-step='1']").click();
+            $$(".calendar__day").find(Condition.text(planningDayNumber)).click(); // ввод ожидаемой даты
         } else {
-        $$("calendar__day").find(Condition.text(planningDayNumber)).click();
+            $$(".calendar__day").find(Condition.text(planningDayNumber)).click(); // ввод ожидаемой даты
         }
 
         $("[data-test-id='name'] input").sendKeys("Сидоров Иван"); // ввести фамилию и имя (в поле фамилии и имени разрешены только русские буквы, дефисы и пробелы)
