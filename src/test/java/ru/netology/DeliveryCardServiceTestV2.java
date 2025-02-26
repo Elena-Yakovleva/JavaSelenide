@@ -13,6 +13,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -23,6 +24,10 @@ public class DeliveryCardServiceTestV2 {
 
     public String generateDate(int days, String pattern) {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public String currentMonth(String pattern) {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public String generateMonth(int days ) {
@@ -54,10 +59,8 @@ public class DeliveryCardServiceTestV2 {
     @Test
     void shouldSelectDataFromCalendar() {
         String planningDate = generateDate(7, "dd.MM.yyyy");
-
-        String planningMount = generateMonth(7);
-
         String planningDayNumber = generateDate(7,"d");
+        String planningMount = generateMonth(7);
 
 
 
@@ -66,7 +69,11 @@ public class DeliveryCardServiceTestV2 {
 
         $(".icon-button").shouldHave(Condition.visible).click();
 
-
+        if() {
+            $("[data-step='1']").click();
+        } else {
+        $$("calendar__day").find(Condition.text(planningDayNumber)).click();
+        }
 
         $("[data-test-id='name'] input").sendKeys("Сидоров Иван"); // ввести фамилию и имя (в поле фамилии и имени разрешены только русские буквы, дефисы и пробелы)
         $("[data-test-id='phone'] input").sendKeys("+79992221133"); // ввести номер телефона (только 11 цифр, символ + на первом месте)
